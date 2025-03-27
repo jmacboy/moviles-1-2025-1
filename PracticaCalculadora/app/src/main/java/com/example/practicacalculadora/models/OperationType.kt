@@ -1,4 +1,4 @@
-package com.example.practicacalculadora
+package com.example.practicacalculadora.models
 
 enum class OperationType {
     ADDITION,
