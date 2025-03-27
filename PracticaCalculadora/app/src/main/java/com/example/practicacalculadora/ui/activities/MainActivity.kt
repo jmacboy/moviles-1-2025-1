@@ -34,11 +34,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModelObservers() {
-        viewModel.result.observe(this){ result ->
+        viewModel.result.observe(this) { result ->
             if (result.isEmpty()) {
                 binding.lblResult.text = "0"
             } else {
                 binding.lblResult.text = result
+            }
+        }
+        viewModel.showError.observe(this) {
+            if (it) {
+                Toast.makeText(this, "Error, división por 0", Toast.LENGTH_SHORT).show()
             }
         }
     }

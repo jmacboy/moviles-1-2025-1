@@ -8,6 +8,8 @@ import com.example.practicacalculadora.models.OperationType
 class MainViewModel : ViewModel() {
     private var _result: MutableLiveData<String> = MutableLiveData("")
     val result: LiveData<String> = _result
+    private var _showError: MutableLiveData<Boolean> = MutableLiveData(false)
+    val showError: LiveData<Boolean> = _showError
     private var currentOperation: OperationType = OperationType.NONE
     private var prevNumber: Int = 0
 
@@ -41,7 +43,7 @@ class MainViewModel : ViewModel() {
                 if (secondNumber != 0) {
                     prevNumber / secondNumber
                 } else {
-//                    Toast.makeText(this, "Error, división por 0", Toast.LENGTH_SHORT).show()
+                    _showError.value = true
                     return
                 }
             }
