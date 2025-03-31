@@ -8,26 +8,40 @@
     tools:context=".ui.activities.MainActivity">
 
     <com.example.practicacomponentes.ui.components.NumberPicker
-        android:id="@+id/numberPicker"
+        android:id="@+id/numberPicker1"
         android:layout_width="409dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:initialNumber="5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.example.practicacomponentes.ui.components.NumberPicker
+        android:id="@+id/numberPicker2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numberPicker" />
+        app:layout_constraintTop_toBottomOf="@+id/numberPicker1" />
 
     <com.example.practicacomponentes.ui.components.NumberPicker
+        android:id="@+id/numberPicker3"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="68dp"
         android:layout_marginBottom="344dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnShowValues"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Mostrar valores"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

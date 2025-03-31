@@ -5,10 +5,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.example.practicacomponentes.databinding.NumberPickerLayoutBinding
+import androidx.core.content.withStyledAttributes
 
 class NumberPicker(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
     private val binding: NumberPickerLayoutBinding
     var value: Int = 0
+        set(value){
+            field = value
+            reloadScreen()
+            onValueChange?.invoke(value)
+        }
+    private var onValueChange: ((Int) -> Unit)? = null
 
     init {
         val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -18,6 +25,22 @@ class NumberPicker(context: Context?, attrs: AttributeSet?) : LinearLayout(conte
             true
         )
         setupEventListeners()
+        readXmlAttrs(attrs)
+    }
+
+    private fun readXmlAttrs(attrs: AttributeSet?) {
+        if (attrs == null) {
+            return
+        }
+        context.withStyledAttributes(
+            attrs,
+            com.example.practicacomponentes.R.styleable.NumberPicker
+        ) {
+            value =
+                getInt(com.example.practicacomponentes.R.styleable.NumberPicker_initialNumber, 0)
+            reloadScreen()
+        }
+
     }
 
     private fun setupEventListeners() {
@@ -37,5 +60,8 @@ class NumberPicker(context: Context?, attrs: AttributeSet?) : LinearLayout(conte
 
     private fun reloadScreen() {
         binding.lblValue.text = value.toString()
+    }
+    fun setOnValueChangeListener(listener: (Int) -> Unit) {
+        onValueChange = listener
     }
 }
