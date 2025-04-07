@@ -29,8 +29,14 @@ class PersonAdapter(
         val item = people[position]
         holder.bind(item, personClickListener)
     }
+
     fun setOnPersonClickListener(listener: PersonClickListener) {
         personClickListener = listener
+    }
+
+    fun setData(people: java.util.ArrayList<Person>) {
+        this.people = people
+        notifyDataSetChanged()
     }
 
     class ViewHolder(private val binding: PersonItemLayoutBinding) :
@@ -38,13 +44,17 @@ class PersonAdapter(
         fun bind(item: Person, listener: PersonClickListener?) {
             binding.lblContactName.text = item.name + " " + item.lastName
             binding.lblContactPhone.text = item.phone
-            binding.root.setOnClickListener{
+            binding.root.setOnClickListener {
                 listener?.onPersonClick(item)
+            }
+            binding.btnContactOpenDetail.setOnClickListener {
+                listener?.onPersonDetailClick(item)
             }
         }
     }
 
     interface PersonClickListener {
         fun onPersonClick(person: Person)
+        fun onPersonDetailClick(person: Person)
     }
 }

@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.practicalista.R
 import com.example.practicalista.databinding.ActivityContactListBinding
 import com.example.practicalista.models.Person
+import com.example.practicalista.repositories.PersonRepository
 import com.example.practicalista.ui.adapters.PersonAdapter
 
 class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListener {
     private lateinit var binding: ActivityContactListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,28 +29,29 @@ class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListen
             insets
         }
         setupRecyclerView()
+        setupEventListeners()
     }
 
+    private fun setupEventListeners() {
+        binding.btnCreatePerson.setOnClickListener {
+            //TODO: Hacer cosas
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reloadData()
+    }
+
+    private fun reloadData() {
+        val people = PersonRepository.getPeople()
+        val adapter = binding.rvContactList.adapter as PersonAdapter
+        adapter.setData(people)
+    }
 
     private fun setupRecyclerView() {
-        val people = arrayListOf(
-            Person(1, "Juan", "Pérez", "1234567890", "jperez@test.com", "Calle Falsa 123"),
-            Person(2, "Juan", "Pérezito", "1234567890", "jperez2@test.com", "Calle Falsa 123"),
-            Person(3, "Pepe", "Pecas", "32165987", "ppecas@test.com", "Calle Falsa 124"),
-            Person(4, "Juan", "Pérez", "1234567890", "jperez@test.com", "Calle Falsa 123"),
-            Person(5, "Juan", "Pérezito", "1234567890", "jperez2@test.com", "Calle Falsa 123"),
-            Person(6, "Pepe", "Pecas", "32165987", "ppecas@test.com", "Calle Falsa 124"),
-            Person(7, "Juan", "Pérez", "1234567890", "jperez@test.com", "Calle Falsa 123"),
-            Person(8, "Juan", "Pérezito", "1234567890", "jperez2@test.com", "Calle Falsa 123"),
-            Person(9, "Pepe", "Pecas", "32165987", "ppecas@test.com", "Calle Falsa 124"),
-            Person(10, "Juan", "Pérez", "1234567890", "jperez@test.com", "Calle Falsa 123"),
-            Person(11, "Juan", "Pérezito", "1234567890", "jperez2@test.com", "Calle Falsa 123"),
-            Person(12, "Pepe", "Pecas", "32165987", "ppecas@test.com", "Calle Falsa 124"),
-            Person(13, "Juan", "Pérez", "1234567890", "jperez@test.com", "Calle Falsa 123"),
-            Person(14, "Juan", "Pérezito", "1234567890", "jperez2@test.com", "Calle Falsa 123"),
-            Person(15, "Pepe", "Pecas", "32165987", "ppecas@test.com", "Calle Falsa 124"),
-        )
-        val adapter = PersonAdapter(people)
+
+        val adapter = PersonAdapter(arrayListOf())
         binding.rvContactList.apply {
             this.adapter = adapter
             layoutManager = LinearLayoutManager(this@ContactListActivity).apply {
@@ -66,5 +69,10 @@ class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListen
 
     override fun onPersonClick(person: Person) {
         Toast.makeText(this, "Click en persona con id: ${person.id}", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPersonDetailClick(person: Person) {
+        val intent = PersonDetailActivity.detailIntent(this, person)
+        startActivity(intent)
     }
 }
