@@ -6,17 +6,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 
 class MainActivity : AppCompatActivity() {
-    val emailPref = stringPreferencesKey("emailValue")
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,15 +33,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLogin() {
-        dataStore.data.map { preferences ->
-            val email = preferences[emailPref]
-            if (email != null) {
-                val dashboardIntent = DashboardActivity.intent(this)
-                startActivity(dashboardIntent)
-            } else {
-                val loginIntent = LoginActivity.intent(this)
-                startActivity(loginIntent)
-            }
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        val emailPref = sharedPref.getString("email-pref", "")
+        if (emailPref.isNullOrEmpty()) {
+            val loginIntent = LoginActivity.intent(this)
+            startActivity(loginIntent)
+        } else {
+            val dashboardIntent = DashboardActivity.intent(this)
+            startActivity(dashboardIntent)
         }
     }
 }

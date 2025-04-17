@@ -1,15 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.example.practicadatastore"
+    namespace = "com.example.practicaroom"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.practicadatastore"
-        minSdk = 29
+        applicationId = "com.example.practicaroom"
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -33,12 +34,12 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures{
-        viewBinding = true
-    }
 }
 
 dependencies {
+
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

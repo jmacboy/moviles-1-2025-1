@@ -8,19 +8,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.lifecycleScope
 import com.example.practicadatastore.databinding.ActivityLoginBinding
-import kotlinx.coroutines.launch
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,17 +48,18 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToDashboard(email: String) {
-        saveInfo(this, email)
+        saveInfo(email)
         val dashboardIntent = DashboardActivity.intent(this)
         startActivity(dashboardIntent)
     }
 
-    private fun saveInfo(context: Context, email: String) {
-        val emailPref = stringPreferencesKey("emailValue")
-        lifecycleScope.launch {
-            context.dataStore.edit { settings ->
-                settings[emailPref] = email
-            }
+    private fun saveInfo(email: String) {
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        with(sharedPref.edit()) {
+            putString("email-pref", email)
+            apply()
         }
     }
 

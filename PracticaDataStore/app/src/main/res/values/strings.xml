@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PracticaDataStore</string>
+    <string name="email_pref">email\n</string>
+    <string name="preference_file_key">default-prefs</string>
 </resources>
