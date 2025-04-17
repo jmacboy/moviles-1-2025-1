@@ -39,6 +39,27 @@ class PersonAdapter(
         notifyDataSetChanged()
     }
 
+    fun updateItem(personSaved: Person?) {
+        val index = people.indexOfFirst { it.id == personSaved?.id }
+        if (index != -1) {
+            people[index] = personSaved!!
+            notifyItemChanged(index)
+        }
+    }
+
+    fun insertItem(personSaved: Person?) {
+        people[1] = personSaved!!
+        notifyItemInserted(1)
+    }
+
+    fun deleteItem(person: Person) {
+        val index = people.indexOfFirst { it.id == person.id }
+        if(index != -1) {
+            people.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
+
     class ViewHolder(private val binding: PersonItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Person, listener: PersonClickListener?) {
@@ -50,11 +71,15 @@ class PersonAdapter(
             binding.btnContactOpenDetail.setOnClickListener {
                 listener?.onPersonDetailClick(item)
             }
+            binding.btnDeleteItem.setOnClickListener {
+                listener?.onPersonDeleteClick(item)
+            }
         }
     }
 
     interface PersonClickListener {
         fun onPersonClick(person: Person)
         fun onPersonDetailClick(person: Person)
+        fun onPersonDeleteClick(person: Person)
     }
 }

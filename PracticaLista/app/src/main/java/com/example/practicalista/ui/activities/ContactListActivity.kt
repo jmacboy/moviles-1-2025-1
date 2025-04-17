@@ -1,8 +1,11 @@
 package com.example.practicalista.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,11 +15,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.practicalista.R
 import com.example.practicalista.databinding.ActivityContactListBinding
 import com.example.practicalista.models.Person
-import com.example.practicalista.repositories.PersonRepository
 import com.example.practicalista.ui.adapters.PersonAdapter
+import com.example.practicalista.ui.viewmodels.ContactListViewModel
 
 class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListener {
     private lateinit var binding: ActivityContactListBinding
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                onActivityResult(result.data)
+            }
+        }
+    private val viewModel: ContactListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,23 +40,50 @@ class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListen
         }
         setupRecyclerView()
         setupEventListeners()
+        setupViewModelObservers()
+        viewModel.loadPeople()
     }
 
-    private fun setupEventListeners() {
-        binding.btnCreatePerson.setOnClickListener {
-            //TODO: Hacer cosas
+    private fun setupViewModelObservers() {
+        viewModel.peopleList.observe(this) {
+            val adapter = binding.rvContactList.adapter as PersonAdapter
+            adapter.setData(it)
+        }
+        viewModel.personDeleted.observe(this) {
+            if (it == null) {
+                return@observe
+            }
+            val adapter = binding.rvContactList.adapter as PersonAdapter
+            adapter.deleteItem(it)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        reloadData()
+    private fun onActivityResult(data: Intent?) {
+        val personSaved = data?.getSerializableExtra(PARAM_PERSON_SAVED) as Person?
+        val isInserted = data?.getBooleanExtra(PARAM_INSERTED, false) ?: false
+        if (isInserted) {
+            personInserted(personSaved)
+        } else {
+            personUpdated(personSaved)
+        }
     }
 
-    private fun reloadData() {
-        val people = PersonRepository.getPeople()
+    private fun personUpdated(personSaved: Person?) {
         val adapter = binding.rvContactList.adapter as PersonAdapter
-        adapter.setData(people)
+        adapter.updateItem(personSaved)
+    }
+
+    private fun personInserted(personSaved: Person?) {
+        val adapter = binding.rvContactList.adapter as PersonAdapter
+        adapter.insertItem(personSaved)
+    }
+
+
+    private fun setupEventListeners() {
+        binding.btnCreatePerson.setOnClickListener {
+            val createIntent = PersonDetailActivity.createIntent(this)
+            resultLauncher.launch(createIntent)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -73,6 +110,21 @@ class ContactListActivity : AppCompatActivity(), PersonAdapter.PersonClickListen
 
     override fun onPersonDetailClick(person: Person) {
         val intent = PersonDetailActivity.detailIntent(this, person)
-        startActivity(intent)
+        resultLauncher.launch(intent)
+    }
+
+    override fun onPersonDeleteClick(person: Person) {
+        viewModel.deletePerson(person)
+    }
+
+    companion object {
+        private const val PARAM_PERSON_SAVED = "person_saved"
+        private const val PARAM_INSERTED = "inserted"
+        fun returnIntent(savedPerson: Person, isInserted: Boolean): Intent {
+            return Intent().apply {
+                putExtra(PARAM_PERSON_SAVED, savedPerson)
+                putExtra(PARAM_INSERTED, isInserted)
+            }
+        }
     }
 }

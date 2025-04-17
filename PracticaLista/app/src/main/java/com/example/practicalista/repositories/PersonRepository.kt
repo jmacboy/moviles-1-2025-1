@@ -27,6 +27,21 @@ object PersonRepository {
 
     fun savePerson(person: Person) {
         val index = people.indexOfFirst { it.id == person.id }
-        people[index] = person
+        if (index == -1) {
+            people.add(1, person)
+        } else {
+            people[index] = person
+        }
+    }
+
+    fun deleteItem(person: Person) {
+        val index = people.indexOfFirst { it.id == person.id }
+        if (index != -1) {
+            people.removeAt(index)
+        }
+    }
+
+    fun getPersonById(id: Int): Person? {
+        return people.find { it.id == id }
     }
 }

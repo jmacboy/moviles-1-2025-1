@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.practicalista"
+    namespace = "com.example.practicadatastore"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.practicalista"
+        applicationId = "com.example.practicadatastore"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
@@ -39,10 +39,8 @@ android {
 }
 
 dependencies {
-    // ViewModel
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    // LiveData
-    implementation(libs.androidx.lifecycle.livedata.ktx)
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
