@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PracticaRoom</string>
+    <string-array name="reference_values">
+        <item>Casa</item>
+        <item>Trabajo</item>
+        <item>Celular</item>
+        <item>Otro</item>
+    </string-array>
 </resources>

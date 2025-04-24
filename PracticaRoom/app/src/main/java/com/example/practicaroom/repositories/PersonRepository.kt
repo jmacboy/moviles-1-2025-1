@@ -3,8 +3,17 @@ package com.example.practicaroom.repositories
 import android.content.Context
 import com.example.practicaroom.db.AppDatabase
 import com.example.practicaroom.db.models.Person
+import com.example.practicaroom.db.models.PersonWithPhones
 
 object PersonRepository {
+    suspend fun savePerson(context: Context, person: Person) {
+        if (person.id == 0) {
+            insertPerson(context, person)
+        } else {
+            updatePerson(context, person)
+        }
+    }
+
     suspend fun insertPerson(
         context: Context,
         person: Person
@@ -13,7 +22,7 @@ object PersonRepository {
         db.personDao().insertPerson(person)
     }
 
-    suspend fun getById(context: Context, id: Int): Person {
+    suspend fun getById(context: Context, id: Int): PersonWithPhones {
         val db = AppDatabase.getInstance(context)
         return db
             .personDao()
@@ -28,13 +37,14 @@ object PersonRepository {
             .getAllPersons()
     }
 
-    suspend fun update(context: Context, person: Person) {
+    suspend fun updatePerson(context: Context, person: Person) {
         AppDatabase
             .getInstance(context)
             .personDao()
             .updatePerson(person)
     }
-    suspend fun deletePerson(context: Context, person: Person){
+
+    suspend fun deletePerson(context: Context, person: Person) {
         AppDatabase
             .getInstance(context)
             .personDao()

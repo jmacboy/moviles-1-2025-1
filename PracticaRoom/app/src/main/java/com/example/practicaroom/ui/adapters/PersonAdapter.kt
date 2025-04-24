@@ -64,7 +64,6 @@ class PersonAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Person, listener: PersonClickListener?) {
             binding.lblContactName.text = item.name + " " + item.lastName
-            binding.lblContactPhone.text = item.phone
             binding.root.setOnClickListener {
                 listener?.onPersonClick(item)
             }
