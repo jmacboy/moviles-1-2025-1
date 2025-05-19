@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practicahttp.R
 import com.example.practicahttp.databinding.ActivityMainBinding
+import com.example.practicahttp.models.Post
 import com.example.practicahttp.repositories.PostsRepository
 import com.example.practicahttp.ui.adapters.PostListAdapter
 import com.example.practicahttp.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.runBlocking
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PostListAdapter.OnPostClick {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+        adapter.setOnPostClickListener(this)
     }
 
     private fun setupViewModelObservers() {
@@ -57,6 +59,11 @@ class MainActivity : AppCompatActivity() {
             val adapter = binding.rvPostList.adapter as PostListAdapter
             adapter.setData(it)
         }
+    }
+
+    override fun onPostClick(post: Post) {
+        val intent = PostDetailActivity.newIntent(this, post.id)
+        startActivity(intent)
     }
 
 }
