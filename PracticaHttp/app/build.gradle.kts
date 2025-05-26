@@ -47,6 +47,9 @@ dependencies {
     //coroutines
     implementation(libs.kotlinx.coroutines.android)
 
+    //glide - imagenes
+    implementation (libs.github.glide)
+
     // retrofit
     implementation(libs.retrofit)
     implementation (libs.converter.gson)
