@@ -33,7 +33,14 @@ class BookListActivity : AppCompatActivity() {
         }
         setupRecyclerView()
         setupViewModelObservers()
-        viewModel.loadBookList()
+        setupEventListeners()
+    }
+
+    private fun setupEventListeners() {
+        binding.fabCreateBook.setOnClickListener {
+            val intent = BookDetailActivity.createIntent(this)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -53,16 +60,19 @@ class BookListActivity : AppCompatActivity() {
 //        adapter.setOnBookClickListener(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadBookList()
+    }
     private fun setupViewModelObservers() {
         viewModel.postList.observe(this) {
-            if(it == null) {
+            if (it == null) {
                 return@observe
             }
             val adapter = binding.rvBookList.adapter as BookListAdapter
             adapter.setData(it)
         }
     }
-
 
 
 }
